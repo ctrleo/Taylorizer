@@ -11,16 +11,18 @@ Bun.serve({
     fetch(req) {
         const url = new URL(req.url);
         if (url.pathname == "/login") {
+            console.log("Spotify login requested")
             var state = Math.random().toString(36).substring(2,18);
             return new Response('https://accounts.spotify.com/authorize?' + queryString.stringify({
-            response_type: 'code',
-            client_id: CLIENT_ID,
-            scope: scope,
-            redirect_uri: REDIRECT_URI,
-            state: state
+                response_type: 'code',
+                client_id: CLIENT_ID,
+                scope: scope,
+                redirect_uri: REDIRECT_URI + "",
+                state: state
             }));
         };
         if (url.pathname == "/callback") {
+            console.log("Callback from Spotify API!!!")
             var state = req.query.state || null;
             var code = req.query.code || null;
             if (state == null) {
