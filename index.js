@@ -42,7 +42,7 @@ Bun.serve({
                     },
                     json: true
                 });
-                return new Response(access);
+                return Response(access);
             };
         };
     },
