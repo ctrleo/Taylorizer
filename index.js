@@ -17,7 +17,8 @@ Bun.serve({
                 response_type: 'code',
                 client_id: CLIENT_ID,
                 redirect_uri: REDIRECT_URI,
-                scope: scope
+                scope: scope,
+                state: state
             }));
         };
         if (url.pathname == "/callback") {
