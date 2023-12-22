@@ -1,7 +1,10 @@
+import { redirect } from "express/lib/response";
 import queryString from "query-string";
 // remember to set environment variables 
-var CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-var REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
+const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
+
 var scope = "playlist-read-private playlist-modify-private playlist-modify-public";
 
 Bun.serve({
@@ -16,14 +19,28 @@ Bun.serve({
             redirect_uri: REDIRECT_URI,
             state: state
             }));
+        };
         if (url.pathname == "/callback") {
-            var code = req.query.code || null;
             var state = req.query.state || null;
-            if (state === null) {
-                console.log("Attempted spotify login failed! :( (state mismatch occurred)");
-                res.redirect("https://ctrleo.github.com/taylorizer/#?error="state");
-            }
+            var code = req.query.code || null;
+            if (state == null) {
+                console.log("ATTEMPTED LOGIN FAILED!!! (state mismatch err)");
+                return Response.redirect("https://ctrleo.github.io/taylorizer/#?err=state-mismatch")
+            } else {
+                var authOptions = {
+                    url: 'https://accounts.spotify.com/api/token',
+                    form: {
+                        code: code,
+                        redirect_uri: REDIRECT_URI,
+                        grant_type: 'authorization_code'
+                    },
+                    headers: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'Basic ' + (new ArrayBuffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
+                    },
+                    json: true
+                };
             };
         };
-    };
+    },
 });
