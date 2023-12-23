@@ -2,12 +2,12 @@ import queryString from "query-string";
 // remember to set environment variables 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
+const REDIRECT_URI = "https://ctrleo.github.com/taylorizer";
 
 var scope = "playlist-read-private playlist-modify-private playlist-modify-public";
 
 Bun.serve({
-    port: 8000,
+    port: 8080,
     fetch(req) {
         const url = new URL(req.url);
         if (url.pathname == "/login") {
