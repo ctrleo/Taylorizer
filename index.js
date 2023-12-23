@@ -7,7 +7,7 @@ const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 var scope = "playlist-read-private playlist-modify-private playlist-modify-public";
 
 Bun.serve({
-    port: 8080,
+    port: 80,
     fetch(req) {
         const url = new URL(req.url);
         if (url.pathname == "/login") {
