@@ -7,8 +7,6 @@ const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 var scope = "playlist-read-private playlist-modify-private playlist-modify-public";
 
 Bun.serve({
-    // change to 433 on prod
-    port: 8080,
     fetch(req) {
         const url = new URL(req.url);
         const params = url.searchParams();
@@ -26,7 +24,7 @@ Bun.serve({
         if (url.pathname == "/callback") {
             console.log("Callback from Spotify API!!!")
             var code = params.get("code");
-            var access = fetch("https://accounts.spotify.com", {
+            var access = fetch("https://accounts.spotify.com/api/token", {
                 method: "POST",
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
