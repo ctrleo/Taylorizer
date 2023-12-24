@@ -10,6 +10,7 @@ Bun.serve({
     port: 80,
     fetch(req) {
         const url = new URL(req.url);
+        const params = url.searchParams();
         if (url.pathname == "/login") {
             console.log("Spotify login requested")
             var state = Math.random().toString(36).substring(2,18);
@@ -18,32 +19,25 @@ Bun.serve({
                 client_id: CLIENT_ID,
                 redirect_uri: REDIRECT_URI,
                 scope: scope,
-                state: state
+                show_dialog: true
             }));
         };
         if (url.pathname == "/callback") {
             console.log("Callback from Spotify API!!!")
-            var state = req.query.state || null;
-            var code = req.query.code || null;
-            if (state == null) {
-                console.log("ATTEMPTED LOGIN FAILED!!! (state mismatch err)");
-                return Response.redirect("https://ctrleo.github.io/taylorizer/#?err=state-mismatch")
-            } else {
-                var access = fetch("https://accounts.spotify.com", {
-                    method: "POST",
-                    headers: {
-                        'content-type': 'application/x-www-form-urlencoded',
-                        'Authorization': 'Basic ' + new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64')
-                    },
-                    body: {
-                        code: code,
-                        redirect_uri: REDIRECT_URI,
-                        grant_type: 'authorization_code'
-                    },
-                    json: true
-                });
-                return new Response(access);
-            };
+            var code = params.get("code");
+            var access = fetch("https://accounts.spotify.com", {
+                method: "POST",
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic ' + new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64')
+                },
+                body: {
+                    code: code,
+                    redirect_uri: REDIRECT_URI,
+                    grant_type: 'authorization_code'
+                },
+                json: true
+            });
         };
     },
 });
