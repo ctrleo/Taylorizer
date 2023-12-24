@@ -37,7 +37,8 @@ Bun.serve({
                     grant_type: 'authorization_code'
                 },
                 json: true
-            });
+            })
+            .then(function() {return access});
         };
     },
 });
