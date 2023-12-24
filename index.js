@@ -9,7 +9,7 @@ var scope = "playlist-read-private playlist-modify-private playlist-modify-publi
 Bun.serve({
     fetch(req) {
         const url = new URL(req.url);
-        const params = url.searchParams();
+        const params = new URLSearchParams(url.search);
         if (url.pathname == "/login") {
             console.log("Spotify login requested")
             var state = Math.random().toString(36).substring(2,18);
