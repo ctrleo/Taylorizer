@@ -7,7 +7,7 @@ const REDIRECT_URI = process.env.SPOTIFY_REDIRECT_URI;
 var scope = "playlist-read-private playlist-modify-private playlist-modify-public";
 
 Bun.serve({
-    fetch(req) {
+    async fetch(req) {
         const url = new URL(req.url);
         const params = new URLSearchParams(url.search);
         if (url.pathname == "/login") {
@@ -24,20 +24,20 @@ Bun.serve({
         if (url.pathname == "/callback") {
             console.log("Callback from Spotify API!!!")
             var code = params.get("code");
-            var access = fetch("https://accounts.spotify.com/api/token", {
-                method: "POST",
+            var token = await fetch("https://accounts.spotify.com/api/token", {
+                method: 'POST',
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
-                    'Authorization': 'Basic ' + new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64')
+                    'Authorization': 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
                 },
-                body: {
-                    code: code,
-                    redirect_uri: REDIRECT_URI,
-                    grant_type: 'authorization_code'
-                },
-                json: true
-            })
-            .then(function() {return access});
+                body: new URLSearchParams({
+                    'code': code,
+                    'redirect_uri': REDIRECT_URI,
+                    'grant_type': 'authorization_code'
+                })
+            });
+            console.log(token);
+            return token;
         };
-    },
+    }
 });
