@@ -1,3 +1,4 @@
+import axios from "axios";
 import queryString from "query-string";
 // remember to set environment variables 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
@@ -24,20 +25,20 @@ Bun.serve({
         if (url.pathname == "/callback") {
             console.log("Callback from Spotify API!!!")
             var code = params.get("code");
-            var token = await fetch("https://accounts.spotify.com/api/token", {
-                method: 'POST',
+            var token = await axios({
+                method: 'post',
+                url: 'https://accounts.spotify.com/api/token',
+                data: {
+                    grant_type: 'authorization_code',
+                    code: code,
+                    redirect_uri: REDIRECT_URI
+                },
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded',
-                    'Authorization': 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
-                },
-                body: new URLSearchParams({
-                    'code': code,
-                    'redirect_uri': REDIRECT_URI,
-                    'grant_type': 'authorization_code'
-                })
+                    Authorization: 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
+                }
             });
-            console.log(token);
-            return token;
+            return new Response(token.data.access_token);
         };
     }
 });
