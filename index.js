@@ -38,7 +38,11 @@ Bun.serve({
                     Authorization: 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
                 }
             });
-            return new Response(token.data.access_token);
+            return new Response(token.data.access_token, {
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                }
+            });
         };
     }
 });
