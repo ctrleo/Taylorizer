@@ -11,17 +11,6 @@ Bun.serve({
     async fetch(req) {
         const url = new URL(req.url);
         const params = new URLSearchParams(url.search);
-        if (url.pathname == "/login") {
-            console.log("Spotify login requested")
-            var state = Math.random().toString(36).substring(2,18);
-            return Response.redirect('https://accounts.spotify.com/authorize?' + queryString.stringify({
-                response_type: 'code',
-                client_id: CLIENT_ID,
-                redirect_uri: REDIRECT_URI,
-                scope: scope,
-                show_dialog: true
-            }));
-        };
         if (url.pathname == "/callback") {
             console.log("Callback from Spotify API!!!")
             var code = params.get("code");
